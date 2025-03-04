@@ -25,13 +25,14 @@ export default function AccordianTimer({timerList, setTimerList}: Props) {
 
   useEffect(() => {
     return () => {
+      console.log('cleanup');
       Object.values(intervals).forEach(interval => {
         if (interval) {
           clearInterval(interval);
         }
       });
     };
-  }, [intervals]);
+  }, []);
 
   const onExpandAndCollapse = (id: number, isExpanded: boolean) => {
     const updatedTimerList = timerList.map(item =>
@@ -100,9 +101,17 @@ export default function AccordianTimer({timerList, setTimerList}: Props) {
                   ...category,
                   timers: category.timers.map(timer => {
                     if (timer.id === timerId) {
+                      if (
+                        timer.alertHalfway &&
+                        Math.floor(timer.duration / 2) ===
+                          timer.remaininTime - 1
+                      ) {
+                        ToastMessage.showSuccess(
+                          `50% of the timer duration of timer ${timer.timerName} is completed`,
+                        );
+                      }
                       if (timer.remaininTime <= 1) {
                         clearInterval(interval);
-
                         const updatedList = updateCategoryTimerList(
                           prevList,
                           categoryId,
@@ -141,17 +150,29 @@ export default function AccordianTimer({timerList, setTimerList}: Props) {
       // Stop Timer
       if (intervals[key]) {
         clearInterval(intervals[key]!);
+        console.log('clear interval');
       }
       setIntervals(prev => ({...prev, [key]: null}));
     }
   };
 
   const onResetTimer = async (categoryId: number, timerId: number) => {
+    const key = `${categoryId}-${timerId}`;
+    // Stop Timer
+    if (intervals[key]) {
+      clearInterval(intervals[key]!);
+    }
+    setIntervals(prev => ({...prev, [key]: null}));
     const updatedTimerList = timerList.map(item => {
       if (item.id === categoryId) {
         const updatedTimers = item.timers.map(timer =>
           timer.id === timerId
-            ? {...timer, remaininTime: timer.duration, isCompleted: false}
+            ? {
+                ...timer,
+                remaininTime: timer.duration,
+                isCompleted: false,
+                isRunning: false,
+              }
             : timer,
         );
         return {...item, timers: updatedTimers};
@@ -176,14 +197,19 @@ export default function AccordianTimer({timerList, setTimerList}: Props) {
             if (areAnyRunning) {
               // If timers are running, stop all of them
               if (intervals[key]) {
-                clearInterval(intervals[key]); // Stop the timer
-                setIntervals(prev => {
-                  const newIntervals = {...prev};
-                  delete newIntervals[key]; // Remove it from intervals state
-                  return newIntervals;
-                });
+                // Stop Timer
+                if (intervals[key]) {
+                  clearInterval(intervals[key]!);
+                }
+                setIntervals(prev => ({...prev, [key]: null}));
+                // clearInterval(intervals[key]);
+                // setIntervals(prev => {
+                //   const newIntervals = {...prev};
+                //   delete newIntervals[key]; // Remove it from intervals state
+                //   return newIntervals;
+                // });
               }
-              return {...timer, isRunning: false}; // Mark as paused
+              return {...timer, isRunning: false};
             } else if (!timer.isRunning && !timer.isCompleted) {
               // If none are running, start only the paused ones
               const interval = setInterval(() => {
@@ -192,9 +218,18 @@ export default function AccordianTimer({timerList, setTimerList}: Props) {
                     cat.id === categoryId
                       ? {
                           ...cat,
-                          timers: cat.timers.map(t => {
-                            if (t.id === timer.id) {
-                              if (t.remaininTime <= 1) {
+                          timers: cat.timers.map(runningTimer => {
+                            if (runningTimer.id === timer.id) {
+                              if (
+                                runningTimer.alertHalfway &&
+                                Math.floor(runningTimer.duration / 2) ===
+                                  runningTimer.remaininTime - 1
+                              ) {
+                                ToastMessage.showSuccess(
+                                  `50% of the timer duration of timer ${runningTimer.timerName} is completed`,
+                                );
+                              }
+                              if (runningTimer.remaininTime <= 1) {
                                 clearInterval(interval);
                                 const updatedList = updateCategoryTimerList(
                                   prevList,
@@ -204,15 +239,18 @@ export default function AccordianTimer({timerList, setTimerList}: Props) {
                                 setTimerList(updatedList);
                                 asyncStorage.setTimerList(updatedList);
                                 return {
-                                  ...t,
+                                  ...runningTimer,
                                   remaininTime: 0,
                                   isRunning: false,
                                   isCompleted: true,
                                 };
                               }
-                              return {...t, remaininTime: t.remaininTime - 1};
+                              return {
+                                ...runningTimer,
+                                remaininTime: runningTimer.remaininTime - 1,
+                              };
                             }
-                            return t;
+                            return runningTimer;
                           }),
                         }
                       : cat,
@@ -242,12 +280,20 @@ export default function AccordianTimer({timerList, setTimerList}: Props) {
         return {
           ...category,
           isCategoryRunning: false,
-          timers: category.timers.map(timer => ({
-            ...timer,
-            isRunning: false,
-            remaininTime: timer.duration,
-            isCompleted: false,
-          })),
+          timers: category.timers.map(timer => {
+            const key = `${categoryId}-${timer.id}`;
+            // Stop Timer
+            if (intervals[key]) {
+              clearInterval(intervals[key]!);
+            }
+            setIntervals(prev => ({...prev, [key]: null}));
+            return {
+              ...timer,
+              isRunning: false,
+              remaininTime: timer.duration,
+              isCompleted: false,
+            };
+          }),
         };
       }
       return category;

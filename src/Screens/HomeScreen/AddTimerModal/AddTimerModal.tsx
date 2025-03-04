@@ -3,6 +3,7 @@ import {
   CustomButton,
   CustomInput,
   CustomModal,
+  CustomRadioButton,
   ToastMessage,
 } from '../../../components';
 import {generateId} from '../../../Utilities';
@@ -93,6 +94,11 @@ export default function AddTimerModal({
         placeholder="Enter Category"
         value={timer.category}
         onInputChange={text => setTimer({...timer, category: text})}
+      />
+      <CustomRadioButton
+        label="halfway Alert"
+        onPress={() => setTimer({...timer, alertHalfway: !timer.alertHalfway})}
+        selected={timer.alertHalfway}
       />
       <CustomButton
         buttonStyle={{marginTop: 20}}

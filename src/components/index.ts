@@ -8,3 +8,4 @@ export {default as CustomInput} from './CustomInput/CustomInput';
 export {default as AccordianTimer} from './AccordianTimer/AccordianTimer';
 export {default as ProgressBar} from './ProgressBar/ProgressBar';
 export * from './Layout/ToastMessage/ToastMessage';
+export {default as CustomRadioButton} from './CustomRadioButton/CustomRadioButton';
