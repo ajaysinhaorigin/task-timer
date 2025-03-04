@@ -4,5 +4,14 @@ import CollapseIcon from './collapsed.png';
 import PlayIcon from './playIcon.png';
 import PauseIcon from './pauseIcon.png';
 import ResetIcon from './resetIcon.png';
+import CheckIcon from './check.png';
 
-export {Cross, ExpandIcon, CollapseIcon, PlayIcon, PauseIcon, ResetIcon};
+export {
+  Cross,
+  ExpandIcon,
+  CollapseIcon,
+  PlayIcon,
+  PauseIcon,
+  ResetIcon,
+  CheckIcon,
+};

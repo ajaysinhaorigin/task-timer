@@ -304,7 +304,7 @@ export default function AccordianTimer({timerList, setTimerList}: Props) {
   };
 
   return (
-    <View style={{marginTop: 20}}>
+    <View style={{ marginTop: 20 }}>
       {timerList.map(item => (
         <View key={item.id} style={styles.mainCard}>
           <FlexBox

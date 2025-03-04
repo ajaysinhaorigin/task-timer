@@ -10,10 +10,14 @@ import {
 import AddTimerModal from './AddTimerModal/AddTimerModal';
 import {asyncStorage} from '../../services';
 import {TimerCategory} from '../../Interfaces';
+import FilterTimerModal from './FilterTimerModal/FilterTimerModal';
 
 const HomeScreen = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [timerList, setTimerList] = useState<TimerCategory[]>([]);
+  const [isFilterTimer, setIsFilterTimer] = useState(false);
+  const [filteredTimers, setFilteredTimers] = useState<TimerCategory[]>([]);
+  const [selectedItems,setSelectedItems] = useState<any[]>([])
 
   useEffect(() => {
     getTimerList();
@@ -38,6 +42,7 @@ const HomeScreen = () => {
 
     console.log('updatedTimers', updatedTimers);
     setTimerList(updatedTimers);
+    setFilteredTimers(updatedTimers);
   };
 
   return (
@@ -54,15 +59,35 @@ const HomeScreen = () => {
             width={120}
           />
         </FlexBox>
+        <CustomButton
+          title="Filter-Timer"
+          onPress={() => setIsFilterTimer(true)}
+          width={120}
+          bgColor="transparent"
+          textColor="#333"
+        />
         <ViewPermission isVisible={isVisible}>
           <AddTimerModal
             headerText="Add Timer"
             onClose={() => setIsVisible(false)}
-            timerList={timerList}
-            setTimerList={setTimerList}
+            timerList={filteredTimers}
+            setTimerList={setFilteredTimers}
           />
         </ViewPermission>
-        <AccordianTimer timerList={timerList} setTimerList={setTimerList} />
+        <ViewPermission isVisible={isFilterTimer}>
+          <FilterTimerModal
+            headerText="Filter Timer"
+            onClose={() => setIsFilterTimer(false)}
+            timerList={timerList}
+            setTimerList={setFilteredTimers}
+            setSelectedCategory={setSelectedItems}
+            selectedCategory={selectedItems}
+          />
+        </ViewPermission>
+        <AccordianTimer
+          timerList={filteredTimers}
+          setTimerList={setFilteredTimers}
+        />
       </View>
     </LayoutWrapper>
   );
