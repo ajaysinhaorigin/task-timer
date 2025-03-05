@@ -2,6 +2,7 @@ import React from 'react';
 import {CustomButton, CustomModal, FlexBox} from '../../../components';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {CheckIcon} from '../../../assets';
+import {TimerCategory} from '../../../Interfaces';
 
 interface Props {
   onClose: () => void;
@@ -10,6 +11,7 @@ interface Props {
   setTimerList: any;
   selectedCategory: any[];
   setSelectedCategory: any;
+  filteredTimersList: TimerCategory[];
 }
 
 export default function FilterTimerModal({
@@ -19,15 +21,13 @@ export default function FilterTimerModal({
   setTimerList,
   selectedCategory,
   setSelectedCategory,
+  filteredTimersList,
 }: Props) {
-  // const [selectedCategory, setSelectedCategory] = useState<any[]>([]);
-
-  const handleSelect = (categoryId: string) => {
-    setSelectedCategory(
-      (prevSelected: any) =>
-        prevSelected.includes(categoryId)
-          ? prevSelected.filter((id: any) => id !== categoryId) // Remove if already selected
-          : [...prevSelected, categoryId], // Add if not selected
+  const handleSelect = (categoryId: number) => {
+    setSelectedCategory((prevSelected: any) =>
+      prevSelected.includes(categoryId)
+        ? prevSelected.filter((id: any) => id !== categoryId)
+        : [...prevSelected, categoryId],
     );
   };
 
@@ -36,18 +36,18 @@ export default function FilterTimerModal({
       selectedCategory.includes(timer.id),
     );
     if (!filteredTimers.length) {
-      setTimerList(timerList); // Update timerList with selected items
+      setTimerList(timerList);
       onClose(); // Close modal
       return;
     }
-    setTimerList(filteredTimers); // Update timerList with selected items
+    setTimerList(filteredTimers);
     onClose(); // Close modal
   };
 
   return (
     <CustomModal headerText={headerText} modalVisible={true} onClose={onClose}>
-      <View>
-        {timerList.map(category => (
+      <View style={{marginVertical: 10}}>
+        {filteredTimersList.map(category => (
           <TouchableOpacity
             key={category.id}
             style={styles.filterCard}
