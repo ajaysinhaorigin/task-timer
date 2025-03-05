@@ -79,7 +79,6 @@ const HomeScreen = () => {
             headerText="Filter Timer"
             onClose={() => setIsFilterTimer(false)}
             timerList={timerList}
-            filteredTimersList={filteredTimers}
             setTimerList={setFilteredTimers}
             setSelectedCategory={setSelectedItems}
             selectedCategory={selectedItems}
