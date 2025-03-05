@@ -11,7 +11,7 @@ interface Props {
   setTimerList: any;
   selectedCategory: any[];
   setSelectedCategory: any;
-  filteredTimersList: TimerCategory[];
+  filteredTimers: TimerCategory[];
 }
 
 export default function FilterTimerModal({
@@ -21,9 +21,8 @@ export default function FilterTimerModal({
   setTimerList,
   selectedCategory,
   setSelectedCategory,
-  filteredTimersList,
 }: Props) {
-  const handleSelect = (categoryId: number) => {
+  const handleSelect = (categoryId: string) => {
     setSelectedCategory((prevSelected: any) =>
       prevSelected.includes(categoryId)
         ? prevSelected.filter((id: any) => id !== categoryId)
@@ -37,17 +36,17 @@ export default function FilterTimerModal({
     );
     if (!filteredTimers.length) {
       setTimerList(timerList);
-      onClose(); // Close modal
+      onClose();
       return;
     }
     setTimerList(filteredTimers);
-    onClose(); // Close modal
+    onClose();
   };
 
   return (
     <CustomModal headerText={headerText} modalVisible={true} onClose={onClose}>
       <View style={{marginVertical: 10}}>
-        {filteredTimersList.map(category => (
+        {timerList.map(category => (
           <TouchableOpacity
             key={category.id}
             style={styles.filterCard}
