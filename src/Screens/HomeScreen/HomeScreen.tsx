@@ -70,8 +70,10 @@ const HomeScreen = () => {
           <AddTimerModal
             headerText="Add Timer"
             onClose={() => setIsVisible(false)}
-            timerList={filteredTimers}
-            setTimerList={setFilteredTimers}
+            timerList={timerList}
+            setTimerList={setTimerList}
+            filteredTimers={filteredTimers}
+            setFilteredTimers={setFilteredTimers}
           />
         </ViewPermission>
         <ViewPermission isVisible={isFilterTimer}>
