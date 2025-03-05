@@ -72,6 +72,7 @@ export default function AddTimerModal({
 
     setTimerList(updatedCategoryTimerList);
     await asyncStorage.setTimerList(updatedCategoryTimerList);
+    ToastMessage.showSuccess('Added successfully !');
     onClose();
   };
   return (
