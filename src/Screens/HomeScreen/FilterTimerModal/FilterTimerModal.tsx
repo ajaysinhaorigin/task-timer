@@ -11,7 +11,6 @@ interface Props {
   setTimerList: any;
   selectedCategory: any[];
   setSelectedCategory: any;
-  filteredTimers: TimerCategory[];
 }
 
 export default function FilterTimerModal({
