@@ -14,6 +14,8 @@ interface Props {
   headerText: string;
   timerList: any[];
   setTimerList: any;
+  filteredTimers: any[];
+  setFilteredTimers: any;
 }
 
 export default function AddTimerModal({
@@ -21,6 +23,8 @@ export default function AddTimerModal({
   onClose,
   timerList,
   setTimerList,
+  filteredTimers,
+  setFilteredTimers,
 }: Props) {
   const [timer, setTimer] = useState({
     timerName: '',
@@ -54,6 +58,7 @@ export default function AddTimerModal({
         },
       ];
       setTimerList(updatedList);
+      setFilteredTimers(updatedList);
       await asyncStorage.setTimerList(updatedList);
       ToastMessage.showSuccess('Added successfully !');
       onClose();
@@ -71,6 +76,7 @@ export default function AddTimerModal({
     });
 
     setTimerList(updatedCategoryTimerList);
+    setFilteredTimers(updatedCategoryTimerList);
     await asyncStorage.setTimerList(updatedCategoryTimerList);
     ToastMessage.showSuccess('Added successfully !');
     onClose();
